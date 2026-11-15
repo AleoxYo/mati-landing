@@ -29,14 +29,45 @@ app/
   page.js        la landing completa, armada con los datos de lib/contenido.js
   registro/      crear cuenta
   ingresar/      iniciar sesión
-  plantas/       inicio de la app (requiere sesión)
-  acciones.js    server actions: registrar, ingresar, salir
-  globals.css    todos los estilos
+  plantas/       la planta con su matera simulada (requiere sesión)
+  acciones.js    server actions: registrar, ingresar, entrar a la demo, salir
+  globals.css    estilos de la landing y las cuentas
+  demo.css       estilos de la pantalla de la planta
 components/
   Cara.js        las cinco expresiones de la matera en SVG
   Matera.js      la matera del hero en SVG
+  MateraDemo.js  estado, riego, alertas, ajustes, historial y panel de pruebas
 lib/
   contenido.js   TEXTOS Y DATOS: cambia aquí, no en los componentes
+  matera.js      reglas de la matera: perfil de la planta, cara, alertas y recomendaciones
+  simulador.js   matera virtual que reemplaza a la ESP32 mientras no hay hardware
+test/
+  matera.test.mjs  pruebas de los requerimientos funcionales (npm test)
+```
+
+## Demo de la interfaz
+
+Mientras no hay hardware, la matera es **simulada en el navegador**. Para probarla sin registrarse:
+
+- Botón **Probar la demo** en la landing o en `/ingresar`, o
+- Correo `demo@mati.cerebria.co` y contraseña `demo1234`.
+
+La cuenta demo tiene a **Lulú**, un potus en la sala. En `/plantas` se ve:
+
+- **Estado:** la cara tamagotchi, la humedad, el pH, la luz y el tanque, con su rango ideal.
+- **Control a distancia:** regar ahora (con "Detener"), riego automático, umbral de humedad y agua por riego.
+- **Alertas y recomendaciones:** falta de agua, exceso de agua, luz insuficiente, pH fuera de rango y tanque bajo.
+- **Historial** de la humedad de las últimas 24 h, con los riegos marcados.
+- **Panel de pruebas:** botones que provocan cada situación y una lista de los requerimientos ya comprobados.
+
+El reloj va acelerado: 1 segundo equivale a 10 minutos, o a 1 hora en la velocidad rápida, y se puede pausar.
+Cada visitante tiene su propia simulación, guardada en su navegador, así que nadie le cambia la planta a otro.
+
+Las reglas están en `lib/matera.js` y no dependen de la interfaz. Cuando llegue la ESP32, el firmware usa
+las mismas reglas y sus lecturas reemplazan a `lib/simulador.js`.
+
+```bash
+npm test   # 24 pruebas de los requerimientos funcionales
 ```
 
 Para cambiar un texto, un paso o una fila de la tabla de competencia, edita `lib/contenido.js`.

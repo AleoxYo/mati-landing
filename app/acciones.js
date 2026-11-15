@@ -2,13 +2,16 @@
 
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
+import { DEMO } from '../lib/contenido';
 import {
   DURACION_SESION,
+  agregarMateraDemo,
   cerrarSesion,
   crearUsuario,
   iniciarSesion
 } from '../lib/usuarios';
-import { COOKIE } from '../lib/sesion';
+import { COOKIE, usuarioActual } from '../lib/sesion';
+
 const correoValido = (c) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(c);
 
 async function abrirSesion(token) {
@@ -63,4 +66,18 @@ export async function salir() {
   if (token) await cerrarSesion(token);
   almacen.delete(COOKIE);
   redirect('/');
+}
+
+// Entra con un clic a la cuenta demo.
+export async function entrarDemo() {
+  const r = await iniciarSesion({ correo: DEMO.correo, contrasena: DEMO.contrasena });
+  if (r.token) await abrirSesion(r.token);
+  redirect('/plantas');
+}
+
+export async function agregarMatera() {
+  const usuario = await usuarioActual();
+  if (!usuario) redirect('/ingresar');
+  await agregarMateraDemo(usuario.id);
+  redirect('/plantas');
 }

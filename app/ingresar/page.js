@@ -1,7 +1,9 @@
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import FormIngreso from '../../components/FormIngreso';
+import { DEMO } from '../../lib/contenido';
 import { usuarioActual } from '../../lib/sesion';
+import { entrarDemo } from '../acciones';
 
 export const metadata = { title: 'Iniciar sesión · Mati' };
 
@@ -20,6 +22,21 @@ export default async function Ingresar() {
       </div>
       <p className="auth-sub">Entra para ver cómo están tus plantas.</p>
       <FormIngreso />
+      <div className="demo-caja">
+        <b>¿Vienes a probar la demo?</b>
+        <p>
+          Usa la cuenta demo, que tiene una matera simulada lista para interactuar:
+        </p>
+        <dl>
+          <dt>Correo</dt>
+          <dd>{DEMO.correo}</dd>
+          <dt>Contraseña</dt>
+          <dd>{DEMO.contrasena}</dd>
+        </dl>
+        <form action={entrarDemo}>
+          <button className="btn btn-ghost btn-block">Entrar a la demo</button>
+        </form>
+      </div>
     </main>
   );
 }

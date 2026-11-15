@@ -1,5 +1,6 @@
 import { Bricolage_Grotesque, Nunito_Sans, JetBrains_Mono } from 'next/font/google';
 import './globals.css';
+import './demo.css';
 
 const display = Bricolage_Grotesque({
   subsets: ['latin'],

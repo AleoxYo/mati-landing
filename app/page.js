@@ -1,5 +1,6 @@
 import Cara from '../components/Cara';
 import Matera from '../components/Matera';
+import { entrarDemo } from './acciones';
 import {
   app,
   caras,
@@ -35,9 +36,9 @@ export default function Home() {
             <a className="btn btn-main" href={app.registro}>
               Crear mi cuenta
             </a>
-            <a className="btn btn-ghost" href="#como">
-              Cómo funciona
-            </a>
+            <form action={entrarDemo}>
+              <button className="btn btn-ghost">Probar la demo</button>
+            </form>
           </div>
         </div>
         <div className="hero-art">
@@ -196,6 +197,10 @@ export default function Home() {
               </a>
             </div>
             <span className="cta-note">{llamado.nota}</span>
+            <form action={entrarDemo} className="cta-demo">
+              <span>{llamado.demo}</span>
+              <button className="enlace-claro">Probar la demo →</button>
+            </form>
           </div>
           <div className="cta-art" aria-hidden="true">
             <div className="disc">
