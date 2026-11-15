@@ -12,6 +12,10 @@ WORKDIR /app
 ENV NODE_ENV=production
 ENV PORT=3000
 ENV HOSTNAME=0.0.0.0
+# Cuentas de la app. Montar como volumen persistente en Coolify.
+ENV DATA_DIR=/app/data
+RUN mkdir -p /app/data
+VOLUME /app/data
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static

@@ -1,10 +1,12 @@
 import Cara from '../components/Cara';
 import Matera from '../components/Matera';
 import {
+  app,
   caras,
   comparacion,
   competidores,
   equipo,
+  llamado,
   modelo,
   pasos,
   problemas,
@@ -30,11 +32,11 @@ export default function Home() {
             muestra cómo se siente.
           </p>
           <div className="hero-cta">
-            <a className="btn btn-main" href="#como">
-              Cómo funciona
+            <a className="btn btn-main" href={app.registro}>
+              Crear mi cuenta
             </a>
-            <a className="btn btn-ghost" href="#diferencia">
-              Por qué es distinta
+            <a className="btn btn-ghost" href="#como">
+              Cómo funciona
             </a>
           </div>
         </div>
@@ -168,6 +170,39 @@ export default function Home() {
               <p>{m.texto}</p>
             </div>
           ))}
+        </div>
+      </section>
+
+      <section className="block" id="empezar">
+        <div className="cta">
+          <div className="cta-text">
+            <span className="eyebrow">{llamado.etiqueta}</span>
+            <h2>{llamado.titulo}</h2>
+            <p>{llamado.texto}</p>
+            <ol className="cta-steps">
+              {llamado.pasos.map((paso, i) => (
+                <li key={paso}>
+                  <span className="n">{i + 1}</span>
+                  {paso}
+                </li>
+              ))}
+            </ol>
+            <div className="hero-cta">
+              <a className="btn btn-light" href={app.registro}>
+                Crear cuenta
+              </a>
+              <a className="btn btn-outline" href={app.ingreso}>
+                Ya tengo cuenta
+              </a>
+            </div>
+            <span className="cta-note">{llamado.nota}</span>
+          </div>
+          <div className="cta-art" aria-hidden="true">
+            <div className="disc">
+              <Cara id="feliz" titulo="Feliz" />
+            </div>
+            <span>Tus plantas te cuentan cómo están</span>
+          </div>
         </div>
       </section>
 

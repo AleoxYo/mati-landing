@@ -27,6 +27,10 @@ Abre http://localhost:3000
 app/
   layout.js      metadatos y fuentes (Bricolage Grotesque, Nunito Sans, JetBrains Mono)
   page.js        la landing completa, armada con los datos de lib/contenido.js
+  registro/      crear cuenta
+  ingresar/      iniciar sesión
+  plantas/       inicio de la app (requiere sesión)
+  acciones.js    server actions: registrar, ingresar, salir
   globals.css    todos los estilos
 components/
   Cara.js        las cinco expresiones de la matera en SVG
@@ -43,6 +47,15 @@ El `Dockerfile` usa el build `standalone` de Next y expone el puerto **3000**.
 
 En Coolify: crear una aplicación desde este repositorio, build pack **Dockerfile**, puerto expuesto `3000`
 y el dominio deseado. La versión HTML estática anterior está desplegada en https://mati.cerebria.co
+
+### Cuentas de la app
+
+Los botones del llamado a la acción llevan a `/registro` e `/ingresar`, que crean la cuenta e inician
+sesión. Al entrar se llega a `/plantas` (pantalla 4 de los mockups).
+
+Las cuentas se guardan en `data/usuarios.json`, con las contraseñas cifradas con scrypt. Es un
+almacenamiento de prototipo, sin base de datos. En Coolify hay que agregar un **volumen persistente**
+montado en `/app/data`. Sin él, las cuentas se borran en cada despliegue.
 
 ## Notas
 

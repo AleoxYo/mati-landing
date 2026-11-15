@@ -10,3 +10,6 @@ yarn-error.log*
 *.pem
 .vercel
 next-env.d.ts
+
+# cuentas locales de la app
+data/
