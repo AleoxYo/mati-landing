@@ -9,6 +9,7 @@ import {
   AGUA_POR_RIEGO,
   REQUERIMIENTOS,
   diaDe,
+  enSitioNuevo,
   faltaLuz,
   formato,
   horaDelDia,
@@ -60,7 +61,17 @@ export default function MateraDemo({ usuarioId, matera }) {
   const [sim, setSim] = useState(null);
   const [velocidad, setVelocidad] = useState(1);
   const [ahora, setAhora] = useState(0);
+  const [aviso, setAviso] = useState(null);
   const acumulado = useRef(0);
+  const temporizadorAviso = useRef(null);
+
+  // Confirmación breve de lo que acaba de hacer la persona.
+  const avisar = useCallback((texto) => {
+    clearTimeout(temporizadorAviso.current);
+    setAviso({ texto, id: Date.now() });
+    temporizadorAviso.current = setTimeout(() => setAviso(null), 3500);
+  }, []);
+  useEffect(() => () => clearTimeout(temporizadorAviso.current), []);
 
   // Carga la simulación guardada o crea una nueva.
   useEffect(() => {
@@ -119,11 +130,24 @@ export default function MateraDemo({ usuarioId, matera }) {
     }
   };
 
+  const nombre = matera.nombre;
   const accionAlerta = (a) => {
-    if (a.accion === 'regar') regar();
-    if (a.accion === 'mover') escenario('ventana');
-    if (a.accion === 'ph') escenario('corregirPh');
-    if (a.accion === 'rellenar') escenario('rellenar');
+    if (a.accion === 'regar') {
+      regar();
+      avisar(`Bomba encendida: regando a ${nombre} ${config.segundos} s.`);
+    }
+    if (a.accion === 'mover') {
+      escenario('ventana');
+      avisar(`Listo. La matera mide la luz del sitio nuevo durante el próximo día.`);
+    }
+    if (a.accion === 'ph') {
+      escenario('corregirPh');
+      avisar(`Listo. La sonda ya lee el pH dentro del rango de ${nombre}.`);
+    }
+    if (a.accion === 'rellenar') {
+      escenario('rellenar');
+      avisar('Tanque lleno. El riego vuelve a estar disponible.');
+    }
   };
   const textoAccion = { regar: 'Regar ahora', mover: 'Ya la moví', ph: 'Ya lo corregí', rellenar: 'Ya lo rellené' };
 
@@ -150,7 +174,9 @@ export default function MateraDemo({ usuarioId, matera }) {
       clave: 'luz',
       nombre: 'Luz',
       valor: `${num(e.lux)} lx`,
-      ideal: `Buena luz hoy: ${horasTexto(e.luzHoy)} de ${perfil.horasLuz} h`,
+      ideal: enSitioNuevo(e)
+        ? 'Sitio nuevo: midiendo su luz durante un día'
+        : `Buena luz hoy: ${horasTexto(e.luzHoy)} de ${perfil.horasLuz} h`,
       fuera: faltaLuz(e, perfil),
       barra: Math.min(1, e.lux / 12000),
       banda: [perfil.luz[0] / 12000, Math.min(1, perfil.luz[1] / 12000)]
@@ -159,6 +185,16 @@ export default function MateraDemo({ usuarioId, matera }) {
 
   return (
     <div className="demo">
+      <div className="aviso-flotante" role="status" aria-live="polite">
+        {aviso && (
+          <span key={aviso.id}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M4 12l5 6L20 6" />
+            </svg>
+            {aviso.texto}
+          </span>
+        )}
+      </div>
       <div className="sim-bar">
         <span className="tag-demo">Matera simulada</span>
         <span className="reloj" aria-live="off">
@@ -234,7 +270,7 @@ export default function MateraDemo({ usuarioId, matera }) {
 
           <div className="acciones-riego">
             <button
-              className={`btn btn-block ${sed ? 'btn-main' : 'btn-ghost'}`}
+              className={`btn btn-block btn-regar${sed ? ' urgente' : ''}`}
               onClick={regar}
               disabled={!puedeRegar(e, config) || exceso}
             >

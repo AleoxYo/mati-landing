@@ -69,6 +69,21 @@
 .riego-info{font-size:.88rem;color:var(--water);background:var(--water-soft);border-radius:14px;padding:10px 14px;max-width:none}
 .acciones-riego{display:flex;gap:12px;align-items:stretch}
 .acciones-riego .btn{flex:1}
+
+/* botón de regar: azul agua, con borde y fondo propios para no perderse en la tarjeta */
+.btn-regar{background:var(--water-soft);color:var(--water);border:1.5px solid rgba(43,120,176,.35);transition:background .15s,border-color .15s,box-shadow .15s,transform .1s}
+.btn-regar:hover:not([disabled]){background:#CFE2F1;border-color:var(--water);box-shadow:0 4px 14px rgba(43,120,176,.18)}
+.btn-regar:active:not([disabled]){transform:translateY(1px);box-shadow:none}
+.btn-regar.urgente{background:var(--water);color:#fff;border-color:var(--water);animation:llamar 2.4s ease-in-out infinite}
+.btn-regar.urgente:hover:not([disabled]){background:#1F5F8E;border-color:#1F5F8E}
+.btn-regar[disabled]{background:var(--sunken);color:var(--muted);border-color:var(--line);animation:none}
+@keyframes llamar{0%,100%{box-shadow:0 0 0 0 rgba(43,120,176,.35)}50%{box-shadow:0 0 0 7px rgba(43,120,176,0)}}
+
+/* confirmación breve después de una acción */
+.aviso-flotante{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:20;width:max-content;max-width:calc(100vw - 32px);pointer-events:none}
+.aviso-flotante span{display:flex;align-items:center;gap:10px;background:var(--ink);color:#fff;font-size:.92rem;font-weight:700;padding:12px 18px;border-radius:14px;box-shadow:0 10px 30px rgba(22,36,27,.25);animation:aparecer .25s ease-out}
+.aviso-flotante svg{color:var(--mint);flex:none}
+@keyframes aparecer{from{opacity:0;transform:translateY(8px)}}
 .tanque{flex:none;min-width:104px;border:1px solid var(--line);border-radius:16px;padding:6px 14px;display:flex;flex-direction:column;justify-content:center;line-height:1.25}
 .tanque span,.tanque small{font-size:.75rem;color:var(--muted)}
 .tanque b{font-family:var(--display);font-size:1.15rem}
@@ -142,6 +157,6 @@ button:focus-visible{outline:3px solid var(--leaf);outline-offset:2px}
   .tanque{min-width:88px;padding:6px 12px}
 }
 @media (prefers-reduced-motion:reduce){
-  .detalle .disc svg{animation:none}
+  .detalle .disc svg,.btn-regar.urgente,.aviso-flotante span{animation:none}
   .barra .punto{transition:none}
 }

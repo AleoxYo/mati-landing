@@ -130,9 +130,15 @@ describe('alertas y recomendaciones', () => {
     assert.match(sim.alertas.find((a) => a.tipo === 'ph').detalle, /ácido/);
   });
 
-  test('pH corregido: vuelve al rango y la alerta se cierra', () => {
-    let sim = aplicarEscenario(aplicarEscenario(nueva(), 'acidificar'), 'corregirPh');
-    sim = avanzar(sim, 40, 0);
+  test('"Ya lo corregí": el pH vuelve al rango al instante y la alerta se cierra', () => {
+    const sim = aplicarEscenario(aplicarEscenario(nueva(), 'acidificar'), 'corregirPh');
+    assert.ok(!activas(sim).includes('ph'));
+    assert.equal(sim.cara, 'feliz');
+    assert.equal(sim.alertas.find((a) => a.tipo === 'ph').activa, false);
+  });
+
+  test('el pH corregido se queda dentro del rango con el paso del tiempo', () => {
+    const sim = avanzar(aplicarEscenario(aplicarEscenario(nueva(), 'acidificar'), 'corregirPh'), 40, 0);
     assert.ok(!activas(sim).includes('ph'));
   });
 
@@ -141,6 +147,25 @@ describe('alertas y recomendaciones', () => {
     assert.ok(activas(sim).includes('luz'));
     assert.equal(sim.cara, 'sueno');
     assert.match(sim.alertas.find((a) => a.tipo === 'luz').detalle, /ventana/);
+  });
+
+  test('"Ya la moví": la alerta de luz se cierra al instante y la cara vuelve a feliz', () => {
+    const sim = aplicarEscenario(aplicarEscenario(nueva(), 'sombra'), 'ventana');
+    assert.ok(!activas(sim).includes('luz'));
+    assert.equal(sim.cara, 'feliz');
+  });
+
+  test('"Ya la moví" también funciona de noche y a las 4 p. m.', () => {
+    for (const mediciones of [54, 90]) {
+      const oscura = aplicarEscenario(avanzar(nueva(), mediciones, 0), 'sombra');
+      assert.ok(activas(oscura).includes('luz'));
+      assert.ok(!activas(aplicarEscenario(oscura, 'ventana')).includes('luz'));
+    }
+  });
+
+  test('si vuelve a un rincón oscuro, la alerta de luz regresa', () => {
+    const sim = aplicarEscenario(aplicarEscenario(aplicarEscenario(nueva(), 'sombra'), 'ventana'), 'sombra');
+    assert.ok(activas(sim).includes('luz'));
   });
 
   test('tanque bajo: avisa cuántos riegos quedan', () => {
